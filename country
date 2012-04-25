@@ -1,0 +1,486 @@
+#!/bin/bash
+getcountry ()
+{
+#Country
+country=`wget -qO-  http://www.liveipmap.com/ | grep -i Country -C 1 | sed  '/img/,$!d' | sed 's/.*img.*[\/\>]\ \(.*\)[\<].*$/\1/'`
+case "$country" in 
+"AFGHANISTAN" ) country="AF"
+		;;
+"ALBANIA" ) country="AL"
+		;;
+"ALGERIA  " ) country="DZ"
+		;;
+"AMERICAN SAMOA" ) country="AS"
+		;;
+"ANDORRA " ) country="AD"
+		;;
+"ANGOLA" ) country="AO"
+		;;
+"ANGUILLA" ) country="AI"
+		;;
+"ANTARCTICA" ) country="AQ"
+		;;
+"ANTIGUA AND BARBUDA" ) country="AG"
+		;;
+"ARGENTINA" ) country="AR"
+		;;
+"ARMENIA" ) country="AM"
+		;;
+"ARUBA " ) country="AW"
+		;;
+"AUSTRALIA " ) country="AU"
+		;;
+"AUSTRIA  " ) country="AT"
+		;;
+"AZERBAIJAN" ) country="AZ"
+		;;
+"BAHAMAS  " ) country="BS"
+		;;
+"BAHRAIN " ) country="BH"
+		;;
+"BANGLADESH" ) country="BD"
+		;;
+"BARBADOS " ) country="BB"
+		;;
+"BELARUS " ) country="BY"
+		;;
+"BELGIUM" ) country="BE"
+		;;
+"BELIZE" ) country="BZ"
+		;;
+"BENIN" ) country="BJ"
+		;;
+"BERMUDA" ) country="BM"
+		;;
+"BHUTAN" ) country="BT"
+		;;
+"BOLIVIA" ) country="BO"
+		;;
+"BOSNIA AND HERZEGOVINA" ) country="BA"
+		;;
+"BOTSWANA" ) country="BW"
+		;;
+"BOUVET ISLAND" ) country="BV"
+		;;
+"BRAZIL" ) country="BR"
+		;;
+"BRITISH INDIAN OCEAN TERRITORY" ) country="IO"
+		;;
+"BRUNEI DARUSSALAM" ) country="BN"
+		;;
+"BULGARIA" ) country="BG"
+		;;
+"BURKINA FASO" ) country="BF"
+		;;
+"BURUNDI" ) country="BI"
+		;;
+"CAMBODIA " ) country="KH"
+		;;
+"CAMEROON" ) country="CM"
+		;;
+"CANADA " ) country="CA"
+		;;
+"CAPE VERDE" ) country="CV"
+		;;
+"CAYMAN ISLANDS" ) country="KY"
+		;;
+"CENTRAL AFRICAN REPUBLIC" ) country="CF"
+		;;
+"CHAD" ) country="TD"
+		;;
+"CHILE" ) country="CL"
+		;;
+"CHINA" ) country="CN"
+		;;
+"CHRISTMAS ISLAND" ) country="CX"
+		;;
+"COCOS (KEELING ISLANDS)" ) country="CC"
+		;;
+"COLOMBIA" ) country="CO"
+		;;
+"COMOROS" ) country="KM"
+		;;
+"CONGO " ) country="CG"
+		;;
+"COOK ISLANDS" ) country="CK"
+		;;
+"COSTA RICA " ) country="CR"
+		;;
+"COTE D'IVOIRE (IVORY COAST)" ) country="CI"
+		;;
+"CROATIA (HRVATSKA" ) country="HR"
+		;;
+"CUBA " ) country="CU"
+		;;
+"CYPRUS" ) country="CY"
+		;;
+"CZECH REPUBLIC" ) country="CZ"
+		;;
+"DENMARK" ) country="DK"
+		;;
+"DJIBOUTI" ) country="DJ"
+		;;
+"DOMINICA" ) country="DM"
+		;;
+"DOMINICAN REPUBLIC" ) country="DO"
+		;;
+"EAST TIMOR" ) country="TP"
+		;;
+"ECUADOR" ) country="EC"
+		;;
+"EGYPT " ) country="EG"
+		;;
+"EL SALVADOR " ) country="SV"
+		;;
+"EQUATORIAL GUINEA  " ) country="GQ"
+		;;
+"ERITREA " ) country="ER"
+		;;
+"ESTONIA " ) country="EE"
+		;;
+"ETHIOPIA" ) country="ET"
+		;;
+"FALKLAND ISLANDS (MALVINAS)" ) country="FK"
+		;;
+"FAROE ISLANDS " ) country="FO"
+		;;
+"FIJI" ) country="FJ"
+		;;
+"FINLAND" ) country="FI"
+		;;
+"FRANCE" ) country="FR"
+		;;
+"FRANCE, METROPOLITAN" ) country="FX"
+		;;
+"FRENCH GUIANA" ) country="GF"
+		;;
+"FRENCH POLYNESIA" ) country="PF"
+		;;
+"FRENCH SOUTHERN TERRITORIES" ) country="TF"
+		;;
+"GABON" ) country="GA"
+		;;
+"GAMBIA" ) country="GM"
+		;;
+"GEORGIA" ) country="GE"
+		;;
+"GERMANY" ) country="DE"
+		;;
+"GHANA  " ) country="GH"
+		;;
+"GIBRALTAR" ) country="GI"
+		;;
+"GREECE" ) country="GR"
+		;;
+"GREENLAND" ) country="GL"
+		;;
+"GRENADA " ) country="GD"
+		;;
+"GUADELOUPE" ) country="GP"
+		;;
+"GUAM " ) country="GU"
+		;;
+"GUATEMALA" ) country="GT"
+		;;
+"GUINEA" ) country="GN"
+		;;
+"GUINEA-BISSAU" ) country="GW"
+		;;
+"GUYANA" ) country="GY"
+		;;
+"HAITI" ) country="HT"
+		;;
+"HEARD AND MCDONALD ISLANDS" ) country="HM"
+		;;
+"HONDURAS" ) country="HN"
+		;;
+"HONG KONG" ) country="HK"
+		;;
+"HUNGARY" ) country="HU"
+		;;
+"ICELAND" ) country="IS"
+		;;
+"INDIA" ) country="IN"
+		;;
+"INDONESIA" ) country="ID"
+		;;
+"IRAN" ) country="IR"
+		;;
+"IRAQ" ) country="IQ"
+		;;
+"IRELAND" ) country="IE"
+		;;
+"ISRAEL" ) country="IL"
+		;;
+"ITALY" ) country="IT"
+		;;
+"JAMAICA" ) country="JM"
+		;;
+"JAPAN " ) country="JP"
+		;;
+"JORDAN " ) country="JO"
+		;;
+"KAZAKHSTAN" ) country="KZ"
+		;;
+"KENYA " ) country="KE"
+		;;
+"KIRIBATI " ) country="KI"
+		;;
+"KOREA (NORTH)" ) country="KP"
+		;;
+"KOREA (SOUTH)" ) country="KR"
+		;;
+"KUWAIT" ) country="KW"
+		;;
+"KYRGYZSTAN" ) country="KG"
+		;;
+"LAOS  " ) country="LA"
+		;;
+"LATVIA" ) country="LV"
+		;;
+"LEBANON" ) country="LB"
+		;;
+"LESOTHO  " ) country="LS"
+		;;
+"LIBERIA " ) country="LR"
+		;;
+"LIBYA" ) country="LY"
+		;;
+"LIECHTENSTEIN" ) country="LI"
+		;;
+"LITHUANIA" ) country="LT"
+		;;
+"LUXEMBOURG " ) country="LU"
+		;;
+"MACAU" ) country="MO"
+		;;
+"MACEDONIA" ) country="MK"
+		;;
+"MADAGASCAR" ) country="MG"
+		;;
+"MALAWI" ) country="MW"
+		;;
+"MALAYSIA" ) country="MY"
+		;;
+"MALDIVES" ) country="MV"
+		;;
+"MALI" ) country="ML"
+		;;
+"MALTA" ) country="MT"
+		;;
+"MARSHALL ISLANDS" ) country="MH"
+		;;
+"MARTINIQUE" ) country="MQ"
+		;;
+"MAURITANIA  " ) country="MR"
+		;;
+"MAURITIUS  " ) country="MU"
+		;;
+"MAYOTTE" ) country="YT"
+		;;
+"MEXICO" ) country="MX"
+		;;
+"MICRONESIA" ) country="FM"
+		;;
+"MOLDOVA" ) country="MD"
+		;;
+"MONACO" ) country="MC"
+		;;
+"MONGOLIA" ) country="MN"
+		;;
+"MONTSERRAT" ) country="MS"
+		;;
+"MOROCCO" ) country="MA"
+		;;
+"MOZAMBIQUE" ) country="MZ"
+		;;
+"MYANMAR" ) country="MM"
+		;;
+"NAMIBIA  " ) country="NA"
+		;;
+"NAURU" ) country="NR"
+		;;
+"NEPAL  " ) country="NP"
+		;;
+"NETHERLANDS" ) country="NL"
+		;;
+"NETHERLANDS ANTILLES" ) country="AN"
+		;;
+"NEW CALEDONIA" ) country="NC"
+		;;
+"NEW ZEALAND" ) country="NZ"
+		;;
+"NICARAGUA" ) country="NI"
+		;;
+"NIGER" ) country="NE"
+		;;
+"NIGERIA" ) country="NG"
+		;;
+"NIUE  " ) country="NU"
+		;;
+"NORFOLK ISLAND" ) country="NF"
+		;;
+"NORTHERN MARIANA ISLANDS" ) country="MP"
+		;;
+"NORWAY" ) country="NO"
+		;;
+"OMAN" ) country="OM"
+		;;
+"PAKISTAN" ) country="PK"
+		;;
+"PALAU" ) country="PW"
+		;;
+"PANAMA" ) country="PA"
+		;;
+"PAPUA NEW GUINEA" ) country="PG"
+		;;
+"PARAGUAY" ) country="PY"
+		;;
+"PERU" ) country="PE"
+		;;
+"PHILIPPINES" ) country="PH"
+		;;
+"PITCAIRN" ) country="PN"
+		;;
+"POLAND" ) country="PL"
+		;;
+"PORTUGAL" ) country="PT"
+		;;
+"PUERTO RICO" ) country="PR"
+		;;
+"QATAR" ) country="QA"
+		;;
+"REUNION" ) country="RE"
+		;;
+"ROMANIA" ) country="RO"
+		;;
+"RUSSIAN FEDERATION" ) country="RU"
+		;;
+"RWANDA" ) country="RW"
+		;;
+"SAINT KITTS AND NEVIS" ) country="KN"
+		;;
+"SAINT LUCIA  " ) country="LC"
+		;;
+"SAINT VINCENT AND THE GRENADINES" ) country="VC"
+		;;
+"SAMOA" ) country="WS"
+		;;
+"SAN MARINO" ) country="SM"
+		;;
+"SAO TOME AND PRINCIPE " ) country="ST"
+		;;
+"SAUDI ARABIA" ) country="SA"
+		;;
+"SENEGAL" ) country="SN"
+		;;
+"SEYCHELLES" ) country="SC"
+		;;
+"SIERRA LEONE" ) country="SL"
+		;;
+"SINGAPORE" ) country="SG"
+		;;
+"SLOVAK REPUBLIC" ) country="SK"
+		;;
+"SLOVENIA" ) country="SI"
+		;;
+"SOLOMON ISLANDS" ) country="SB"
+		;;
+"SOMALIA" ) country="SO"
+		;;
+"SOUTH AFRICA  " ) country="ZA"
+		;;
+"S. GEORGIA AND S. SANDWICH ISLS.  " ) country="GS"
+		;;
+"SPAIN" ) country="ES"
+		;;
+"SRI LANKA" ) country="LK"
+		;;
+"ST. HELENA" ) country="SH"
+		;;
+"ST. PIERRE AND MIQUELON" ) country="PM"
+		;;
+"SUDAN" ) country="SD"
+		;;
+"SURINAME" ) country="SR"
+		;;
+"SVALBARD AND JAN MAYEN ISLANDS" ) country="SJ"
+		;;
+"SWAZILAND" ) country="SZ"
+		;;
+"SWEDEN" ) country="SE"
+		;;
+"SWITZERLAND" ) country="CH"
+		;;
+"SYRIA" ) country="SY"
+		;;
+"TAIWAN" ) country="TW"
+		;;
+"TAJIKISTAN" ) country="TJ"
+		;;
+"TANZANIA" ) country="TZ"
+		;;
+"THAILAND" ) country="TH"
+		;;
+"TOGO" ) country="TG"
+		;;
+"TOKELAU" ) country="TK"
+		;;
+"TONGA" ) country="TO"
+		;;
+"TRINIDAD AND TOBAGO" ) country="TT"
+		;;
+"TUNISIA" ) country="TN"
+		;;
+"TURKEY" ) country="TR"
+		;;
+"TURKMENISTAN" ) country="TM"
+		;;
+"TURKS AND CAICOS ISLANDS" ) country="TC"
+		;;
+"TUVALU" ) country="TV"
+		;;
+"UGANDA  " ) country="UG"
+		;;
+"UKRAINE" ) country="UA"
+		;;
+"UNITED ARAB EMIRATES" ) country="AE"
+		;;
+"UNITED KINGDOM" ) country="UK"
+		;;
+"UNITED STATES" ) country="US"
+		;;
+"MINOR OUTLYING ISLANDS" ) country="US"
+		;;
+"URUGUAY" ) country="UY"
+		;;
+"UZBEKISTAN" ) country="UZ"
+		;;
+"VANUATU" ) country="VU"
+		;;
+"VATICAN CITY STATE (HOLY SEE)" ) country="VA"
+		;;
+"VENEZUELA" ) country="VE"
+		;;
+"VIET NAM" ) country="VN"
+		;;
+"VIRGIN ISLANDS (BRITISH)" ) country="VG"
+		;;
+"VIRGIN ISLANDS (US)" ) country="VI"
+		;;
+"WALLIS AND FUTUNA ISLANDS" ) country="WF"
+		;;
+"WESTERN SAHARA" ) country="EH"
+		;;
+"YEMEN" ) country="YE"
+		;;
+"YUGOSLAVIA" ) country="YU"
+		;;
+"ZAIRE" ) country="ZR"
+		;;
+"ZAMBIA" ) country="ZM"
+		;;
+"ZIMBABWE" ) country="ZW"
+		;;
+esac
+}

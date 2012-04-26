@@ -1,6 +1,6 @@
 #!/bin/bash
 
-prep_slap.d ()
+prep_slap_d ()
 {
 wget http://bind9-ldap.bayour.com/dnszone-schema.txt 
 

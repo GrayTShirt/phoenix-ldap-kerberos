@@ -43,7 +43,9 @@ admindc="cn=admin,${searchdc}"
 
 . ./ssl.sh
 ssl -p $password
-mkdir -p /etc/openldap/ssl/
+if [ ! -d "/etc/openldap/ssl/" ] ; then 
+	mkdir -p /etc/openldap/ssl/
+fi
 cp ssl/cacert.crt /etc/openldap/ssl/ 
 cp ssl/server_crt.pem /etc/openldap/ssl/ 
 cp ssl/server_key.pem /etc/openldap/ssl/ 
@@ -57,7 +59,7 @@ check_dependencies
 hashedpw=`slappasswd -s $password`
 
 . ./slap_d
-prep_slap $searchdc $admindc $hashedpw
+prep_slap_d $searchdc $admindc $hashedpw
 
 if [ ! -d "/var/lib/ldap" ] ; then 
 	mkdir -p /var/lib/ldap
@@ -106,6 +108,6 @@ slapd_config_post
 
 . ./kerberos
 krb5conf $searchdc $admindc $password
-
+/etc/init.d/mit-krb5kpropd start
 
 exit 0

@@ -5,14 +5,15 @@ check_dependencies ()
    type eix >/dev/null 2>&1 || { echo >&2 "I require eix but it's not installed. Installing."; emerge eix; eix-update; }
 
    ldap='ok'
-   eix -I net-nds/openldap --installed-with-use sasl --and --installed-with-use kerberos --and --installed-with-use ssl --and --installed-with-use berkdb || { ldap='install'; }
+   eix -I net-nds/openldap --installed-with-use sasl --and --installed-with-use kerberos --and --installed-with-use ssl --and --installed-with-use berkdb || { ldap='install'; echo "ldap missing dependencies"; }
    sasl='ok'
-   eix -I dev-libs/cyrus-sasl --installed-with-use kerberos --and  --installed-with-use openldap --and --installed-with-use ssl --and --installed-with-use berkdb || { sasl='install'; }
+   eix -I dev-libs/cyrus-sasl --installed-with-use kerberos --and  --installed-with-use openldap --and --installed-with-use ssl --and --installed-with-use berkdb || { sasl='install'; echo "cyrus-sasl missing dependencies"; }
    krb='ok'
-   eix -I app-crypt/mit-krb5  --installed-with-use openldap || { krb='install'; }
+   eix -I app-crypt/mit-krb5  --installed-with-use openldap || { krb='install'; echo "kerberos missing dependencies"; }
+   echo "LDAP: $ldap, SASL: $sasl, KERBEROS: $krb"
    if [[ "$krb" -eq "install" ]] || [[ "$sasl" -eq "install" ]] || [[ "$ldap" -eq "install" ]]; then 
       echo "Installing dependencies"
-      echo "USE\=\"\$\{USE\} -ldap -openldap kerberos sasl ssl berkdb\"" >> /etc/make.conf
+      echo "USE=\"\${USE} -ldap -openldap kerberos sasl ssl berkdb\"" >> /etc/make.conf
       emerge dev-libs/cyrus-sasl app-crypt/mit-krb5
       sed -i 's/\-ldap\ \-openldap/ldap\ openldap/' /etc/make.conf
       emerge net-nds/openldap dev-libs/cyrus-sasl app-crypt/mit-krb5

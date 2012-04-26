@@ -84,10 +84,6 @@ moduleload	back_dnssrv.so
 # BDB database definitions
 #######################################################################
 
-database config
-rootdn \"cn=admin,cn=config\"
-rootpw		${3}
-
 database	hdb
 
 suffix		\"${1}\"

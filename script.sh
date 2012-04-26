@@ -81,9 +81,12 @@ chown ldap:ldap /var/lib/ldap
 
 echo "Initializing database frontend"
 
-/etc/init.d/slapd start
-echo "database initialized"
-/etc/init.d/slapd stop
+#/etc/init.d/slapd start
+#echo "database initialized"
+#/etc/init.d/slapd stop
+#echo "database config
+#rootdn \"cn=admin,cn=config\"
+#rootpw		$password" >> /etc/openldap/slapd.conf
 
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
 chown ldap:ldap -R /etc/openldap/slapd.d

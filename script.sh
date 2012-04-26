@@ -81,12 +81,13 @@ chown ldap:ldap /var/lib/ldap
 
 echo "Initializing database frontend"
 
-#/etc/init.d/slapd start
-#echo "database initialized"
-#/etc/init.d/slapd stop
-#echo "database config
-#rootdn \"cn=admin,cn=config\"
-#rootpw		$password" >> /etc/openldap/slapd.conf
+/etc/init.d/slapd start
+echo "database initialized"
+/etc/init.d/slapd stop
+sed -i "s/\(rootdn.*\)$/\#\1/" /etc/openldap/slapd.conf
+sed -i "s/\(rootpw.*\)$/\#\1/" /etc/openldap/slapd.conf
+sed -i "s/\#\ config\_be/database config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw/" /etc/openldap/slapd.conf
+
 
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
 chown ldap:ldap -R /etc/openldap/slapd.d
@@ -116,7 +117,7 @@ olcTLSCertificateFile: /etc/openldap/ssl/server_crt.pem
 -
 add: olcTLSCertificateKeyFile
 olcTLSCertificateKeyFile: /etc/openldap/ssl/server_key.pem" > ssl.ldif
-ldapadd -f ssl.ldif -D cn=admin,cn=config -w $password -x -H ldap://localhost
+ldapmodify -f ssl.ldif -D cn=admin,cn=config -w $password -x -H ldap://localhost
 rm ssl.ldif
 
 slapd_config_post

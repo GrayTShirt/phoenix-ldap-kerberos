@@ -83,13 +83,14 @@ moduleload	back_dnssrv.so
 #######################################################################
 # BDB database definitions
 #######################################################################
+# config_be
 
 database	hdb
 
 suffix		\"${1}\"
 checkpoint	32	30
 rootdn		\"${2}\"
-rootpw		${3}
+rootpw		${3}   
 #         <kbyte> <min>
  
 

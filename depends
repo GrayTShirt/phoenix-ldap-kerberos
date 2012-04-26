@@ -11,7 +11,7 @@ check_dependencies ()
    krb='ok'
    eix -I app-crypt/mit-krb5  --installed-with-use openldap || { krb='install'; echo "kerberos missing dependencies"; }
    echo "LDAP: $ldap, SASL: $sasl, KERBEROS: $krb"
-   if [[ "$krb" -eq "install" ]] || [[ "$sasl" -eq "install" ]] || [[ "$ldap" -eq "install" ]]; then 
+   if [[ "$krb" == "*install*" || "$sasl" == "*install*" || "$ldap" == "*install*" ]] ; then 
       echo "Installing dependencies"
       echo "USE=\"\${USE} -ldap -openldap kerberos sasl ssl berkdb\"" >> /etc/make.conf
       emerge dev-libs/cyrus-sasl app-crypt/mit-krb5

@@ -1,7 +1,7 @@
 #!/bin/bash
 getstate ()
 {
-state=`wget -qO-  http://www.liveipmap.com/ | grep -i Region -C 1 | tail -1 | sed 's/^.*[\<]td[\>]\(.*\)[\<]\/td[\>].*$/\U\1/g'`;
+state=`cat ip_info | grep -i Region -C 1 | tail -1 | sed 's/^.*[\<]td[\>]\(.*\)[\<]\/td[\>].*$/\U\1/g'`;
 case "$state" in 
 "ALABAMA" ) state="AL"
 		;; 

@@ -2,7 +2,7 @@
 getcountry ()
 {
 #Country
-country=`wget -qO-  http://www.liveipmap.com/ | grep -i Country -C 1 | sed  '/img/,$!d' | sed 's/.*img.*[\/\>]\ \(.*\)[\<].*$/\1/'`
+country=`cat ip_info | grep -i Country -C 1 | sed  '/img/,$!d' | sed 's/.*img.*[\/\>]\ \(.*\)[\<].*$/\1/'`
 case "$country" in 
 "AFGHANISTAN" ) country="AF"
 		;;

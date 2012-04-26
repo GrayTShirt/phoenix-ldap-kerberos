@@ -5,8 +5,9 @@ prep_slap_d ()
 wget http://bind9-ldap.bayour.com/dnszone-schema.txt 
 
 mv dnszone-schema.txt /etc/openldap/schema/dnszone.schema
-
-mv /etc/openldap/slapd.conf /etc/openldap/slapd.conf.old
+chown ldap:ldap /etc/openldap/schema/dnszone.schema
+chmod 
+# mv /etc/openldap/slapd.conf /etc/openldap/slapd.conf.old
 echo "
 #
 # See slapd.conf(5) for details on configuration options.
@@ -14,11 +15,10 @@ echo "
 #
 include		/etc/openldap/schema/core.schema
 include		/etc/openldap/schema/collective.schema       
-include		/etc/openldap/schema/corba.schema           
-include		/etc/openldap/schema/core.schema          
+include		/etc/openldap/schema/corba.schema                    
 include		/etc/openldap/schema/cosine.schema           
 include		/etc/openldap/schema/duaconf.schema 
-include		/etc/openldap/schema/dhcp.shema
+include		/etc/openldap/schema/dhcp.schema
 include		/etc/openldap/schema/dyngroup.schema			
 include		/etc/openldap/schema/inetorgperson.schema
 include		/etc/openldap/schema/kerberos.schema
@@ -29,7 +29,7 @@ include		/etc/openldap/schema/openldap.schema
 include		/etc/openldap/schema/ppolicy.schema 
 include		/etc/openldap/schema/pmi.schema
 include		/etc/openldap/schema/dnszone.schema
-include		/etc/openldap/schema/rfc2307bis.schema
+# include		/etc/openldap/schema/rfc2307bis.schema
 
 # Define global ACLs to disable default read access.
 
@@ -67,7 +67,7 @@ moduleload	back_dnssrv.so
 #		Allow authenticated users read access
 #		Allow anonymous users to authenticate
 #	Directives needed to implement policy:
-# access to dn.base=\"\" by * read
+# access to dn.base=\"cn=config\" by  ${2} write
 # access to dn.base=\"cn=Subschema\" by * read
 # access to *
 #	by self write
@@ -84,19 +84,57 @@ moduleload	back_dnssrv.so
 # BDB database definitions
 #######################################################################
 
+database config
+rootdn \"cn=admin,cn=config\"
+rootpw		${3}
+
 database	hdb
+
 suffix		\"${1}\"
-#         <kbyte> <min>
-checkpoint	32	30 
+checkpoint	32	30
 rootdn		\"${2}\"
+rootpw		${3}
+#         <kbyte> <min>
+ 
+
 # Cleartext passwords, especially for the rootdn, should
 # be avoid.  See slappasswd(8) and slapd.conf(5) for details.
 # Use of strong authentication encouraged.
-rootpw		\"${3}\"
+
 # The database directory MUST exist prior to running slapd AND 
 # should only be accessible by the slapd and slap tools.
 # Mode 700 recommended.
-directory	/var/lib/ldap
+directory	\"/var/lib/ldap\"
 # Indices to maintain
 index	objectClass	eq" > /etc/openldap/slapd.conf
+
+echo "# \$OpenLDAP$
+# Example DB_CONFIG file for use with slapd(8) BDB/HDB databases.
+#
+# See the Oracle Berkeley DB documentation
+#   <http://www.oracle.com/technology/documentation/berkeley-db/db/ref/env/db_config.html>
+# for detail description of DB_CONFIG syntax and semantics.
+#
+# Hints can also be found in the OpenLDAP Software FAQ
+#	<http://www.openldap.org/faq/index.cgi?file=2>
+# in particular:
+#   <http://www.openldap.org/faq/index.cgi?file=1075>
+
+# Note: most DB_CONFIG settings will take effect only upon rebuilding
+# the DB environment.
+
+# one 0.25 GB cache
+set_cachesize 0 268435456 1
+
+# Data Directory
+# set_data_dir /var/lib/ldap
+
+# Transaction Log settings
+set_lg_regionmax 262144
+set_lg_bsize 2097152
+#set_lg_dir logs
+
+# Note: special DB_CONFIG flags are no longer needed for \"quick\"
+# slapadd(8) or slapindex(8) access (see their -q option). 
+" > /var/lib/ldap/DB_CONFIG
 }

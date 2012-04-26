@@ -53,14 +53,6 @@ rm -rf ssl/
 chown ldap:ldap -R /etc/openldap/ssl 
 chmod 700 -R /etc/openldap/ssl 
 
-. ./depends
-check_dependencies
-
-hashedpw=`slappasswd -s $password`
-
-. ./slap_d
-prep_slap_d $searchdc $admindc $hashedpw
-
 if [ ! -d "/var/lib/ldap" ] ; then 
 	mkdir -p /var/lib/ldap
 fi
@@ -71,8 +63,30 @@ if [ ! -d "/etc/openldap/slapd.d" ] ; then
 	mkdir -p /etc/openldap/slapd.d
 fi
 chmod 700 /etc/openldap/slapd.d
-chown ldap:ldap /etc/openldap/slapd.d
+
+. ./depends
+check_dependencies
+
+hashedpw=`slappasswd -s $password`
+
+. ./slap_d
+prep_slap_d $searchdc $admindc $hashedpw
+chown ldap:ldap /etc/openldap/slapd.conf
+chmod 700 /etc/openldap/slapd.conf
+. ./slapd_config
+slapd_config_init
+
+chmod 700 /var/lib/ldap
+chown ldap:ldap /var/lib/ldap
+
+echo "Initializing database frontend"
+
+/etc/init.d/slapd start
+echo "database initialized"
+/etc/init.d/slapd stop
+
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
+chown ldap:ldap -R /etc/openldap/slapd.d
 
 mv /etc/openldap/slapd.conf /etc/openldap/slapd.conf.save
 
@@ -84,8 +98,8 @@ mv /etc/openldap/slapd.conf /etc/openldap/slapd.conf.save
 #done
 
 
-mv /etc/conf.d/slapd /etc/conf.d/slapd.old
-. ./slapd_config
+# mv /etc/conf.d/slapd /etc/conf.d/slapd.old
+
 slapd_config_pre
 
 /etc/init.d/slapd restart
@@ -99,7 +113,7 @@ olcTLSCertificateFile: /etc/openldap/ssl/server_crt.pem
 -
 add: olcTLSCertificateKeyFile
 olcTLSCertificateKeyFile: /etc/openldap/ssl/server_key.pem" > ssl.ldif
-ldapadd -f ssl.ldif -D $admindc -w $password -x -H ldap://localhost
+ldapadd -f ssl.ldif -D cn=admin,cn=config -w $password -x -H ldap://localhost
 rm ssl.ldif
 
 slapd_config_post
@@ -109,5 +123,7 @@ slapd_config_post
 . ./kerberos
 krb5conf $searchdc $admindc $password
 /etc/init.d/mit-krb5kpropd start
+/etc/init.d/mit-krb5kdc start
+/etc/init.d/mit-krbkadmind start
 
 exit 0

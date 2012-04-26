@@ -33,7 +33,7 @@ ssl ()
    email=admin\@`hostname -d`
    email=`echo $email | sed -e 's/\./\\\\./g'`
    sed -i "s/\(^emailAddress.*\=\)$/\1\ $email/" ssl/*
-
+   wget -qO-  http://www.liveipmap.com/ > ip_info
    # Callout to get the country and parse
    . ./country
    getcountry
@@ -45,7 +45,7 @@ ssl ()
    sed -i "s/\(stateOrProvinceName.*\=\)$/\1\ $state/" ssl/*
 
    # Callout to get the city, don't bother parsing
-   city=`wget -qO-  http://www.liveipmap.com/ | grep -i city -C 1 | tail -1 | sed 's/^.*[\<]td[\>]\(.*\)[\<]\/td[\>].*$/\U\1/g'`
+   city=`cat ip_info | grep -i city -C 1 | tail -1 | sed 's/^.*[\<]td[\>]\(.*\)[\<]\/td[\>].*$/\U\1/g'`
    sed -i "s/\(localityName.*\=\)$/\1\ $city/" ssl/*
 
    mkdir ssl/signedcerts

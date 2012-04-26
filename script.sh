@@ -105,6 +105,8 @@ slapd_config_post
 
 /etc/init.d/slapd restart
 
+. ./kerberos
+krb5conf $searchdc $admindc
 
 
 exit 0

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+krb5conf ()
+{
+   domain=`hostname -d`
+   realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
+   fqdn=`hostname -f`
+   echo "
+[libdefaults]
+	default_realm = $realm
+#	kdc_timesync = 1
+#	ccache_type = 4
+#	forwardable = true
+#	proxiable = true
+
+[realms]
+	$realm = {
+		kdc = $fqdn
+		admin_server = $fqdn
+		default_domain = $realm
+		database_module = openldap_ldapconf
+	}
+	
+[domain_realm]
+	.$domain = $realm
+	$domain = $realm
+[logging]
+#	kdc = CONSOLE
+[appdefaults]
+ pam = {
+	ticket_lifetime = 1d
+        renew_lifetime = 1d
+        forwardable = true
+        proxiable = false
+        retain_after_close = false
+        minimum_uid = 2
+        try_first_pass = true
+        ignore_root = true
+
+	ldapservs = $fqdn
+	
+	passwd = /etc/passwd
+        shadow = /etc/shadow
+        groups = /etc/group
+
+}
+[dbdefaults]
+        ldap_kerberos_container_dn = $1
+
+[dbmodules]
+        openldap_ldapconf = {
+                db_library = kldap
+                ldap_kdc_dn = \"$2\"
+
+                # this object needs to have read rights on
+                # the realm container, principal container and realm sub-trees
+                ldap_kadmind_dn = \"$2\"
+
+                # this object needs to have read and write rights on
+                # the realm container, principal container and realm sub-trees
+                ldap_service_password_file = /etc/krb5kdc/service.keyfile
+                ldap_servers = ldaps://$fqdn
+                ldap_conns_per_server = 5
+        }
+" > /etc/krb5.conf
+
+}

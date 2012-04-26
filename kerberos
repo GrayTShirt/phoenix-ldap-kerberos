@@ -64,4 +64,11 @@ krb5conf ()
         }
 " > /etc/krb5.conf
 
+mkdir -p /etc/krb5kdc
+
+kdb5_ldap_util -D  $2 create -subtrees $1 -r $realm -s -H ldaps://$fqdn -w $3
+kdb5_ldap_util -D  $2 stashsrvpw -f /etc/krb5kdc/service.keyfile $2 -w $3
+
+
+
 }

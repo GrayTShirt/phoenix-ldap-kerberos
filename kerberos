@@ -64,6 +64,24 @@ krb5conf ()
         }
 " > /etc/krb5.conf
 
+
+echo "dn: cn=config
+add: olcDbIndex
+olcDbIndex: krbPrincipalName eq,pres,sub" > krbprin.ldif
+ldapadd -f krbprin.ldif -D $2 -w $3 -x -H ldaps://localhost
+
+
+echo "dn: cn=config
+replace: olcAccess
+olcAccess: to attrs=userPassword,shadowLastChange,krbPrincipalKey by dn=\"$2\" write by anonymous auth by self write by * none
+-
+add: olcAccess
+olcAccess: to dn.base=\"\" by * read
+-
+add: olcAccess
+olcAccess: to * by dn=\"$2\" write by * read" > krbacl.ldif
+ldapadd -f krbacl.ldif -D $2 -w $3 -x -H ldaps://localhost
+
 mkdir -p /etc/krb5kdc
 
 kdb5_ldap_util -D  $2 create -subtrees $1 -r $realm -s -H ldaps://$fqdn -w $3

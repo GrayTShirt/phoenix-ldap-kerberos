@@ -1,0 +1,17 @@
+#!/bin/bash
+
+server ()
+{
+fqdn=`hostname -f`
+domain=`hostname -d`
+realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`
+
+echo "dn: cn=config
+olcSaslHost: $fqdn
+olcSaslRealm: $realm
+olcSaslSecProps: noplain,noactive,noanonymous,minssf=56
+olcAuthzRegexp: {0}\"uid=([^/]*),cn=$domain,cn=GSSAPI,cn=auth\" \"uid=\$1,ou=people,$1\"
+olcAuthzRegexp: {1}\"uid=host/([^/]*).$domain,cn=$domain,cn=gssapi,cn=auth\" \"cn=\$1,ou=hosts,$1\"
+olcAuthzRegexp: {2}\"uid=ldap/admin,cn=$domain,cn=gssapi,cn=auth\" \"cn=admin,cn=config\"" > sso.ldif
+
+}

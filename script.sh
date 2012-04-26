@@ -88,8 +88,7 @@ slapd_config_pre
 
 /etc/init.d/slapd restart
 
-echo "
-dn: cn=config
+echo "dn: cn=config
 add: olcTLSCACertificateFile
 olcTLSCACertificateFile: /etc/openldap/ssl/cacert.crt
 -

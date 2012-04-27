@@ -15,6 +15,10 @@ ssl ()
        shift
    done
 
+   if [[ "$hname" == "0" ]] ; then 
+      hname=`hostname -f`
+   fi
+
    # set up the configuration files
    . ./config
    config $hname
@@ -25,9 +29,7 @@ ssl ()
    sed -i "s/ssldir/$sdir/g" ssl/caconfig.cnf 
 
    # Set the common name of the cert to the fully qualifed domain name
-   if [[ "$hname" == "*0*" ]] ; then 
-      hname=`hostname -f`
-   fi
+  
    
    hnamen=`echo $hname | sed -e 's/\./\\\\./g'`
    domain=`echo $hnamen | sed "s/^[A-Za-z0-1\/]*[A-Za-z0-1\/]\.//" `

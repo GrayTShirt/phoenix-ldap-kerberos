@@ -42,7 +42,7 @@ searchdc=`echo $searchdc | sed 's/\./\,dc\=/g'`
 admindc="cn=admin,${searchdc}"
 
 . ./ssl.sh
-ssl -p $password
+ssl -p $password -h $hname
 if [ ! -d "/etc/openldap/ssl/" ] ; then 
 	mkdir -p /etc/openldap/ssl/
 fi

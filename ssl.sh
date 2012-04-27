@@ -2,10 +2,14 @@
 
 ssl () 
 {
+   hname="0"
    while [ "$1" != "" ]; do
        case $1 in
            -p | --password )       shift
                                    password=$1
+                                   ;;
+           -h | --hostname )       shift
+                                   hname=$1
                                    ;;
        esac
        shift
@@ -13,7 +17,7 @@ ssl ()
 
    # set up the configuration files
    . ./config
-   config
+   config $hname
 
    # Set the static file path in the script
    sdir=`pwd -P`/ssl
@@ -21,19 +25,30 @@ ssl ()
    sed -i "s/ssldir/$sdir/g" ssl/caconfig.cnf 
 
    # Set the common name of the cert to the fully qualifed domain name
-   hname=`hostname -f`
-   hname=`echo $hname | sed -e 's/\./\\\\./g'`
-   sed -i "s/hhname/$hname/g" ssl/*
+   if [[ "$hname" == "*0*" ]] ; then 
+      hname=`hostname -f`
+   fi
+   
+   hnamen=`echo $hname | sed -e 's/\./\\\\./g'`
+   domain=`echo $hnamen | sed "s/^[A-Za-z0-1\/]*[A-Za-z0-1\/]\.//" `
+   echo $hnamen   
+   echo $domain
+   sed -i "s/hhname/$hnamen/g" ssl/*
 
    # Set the organization name to the domain name with out the tld
-   orgname=`hostname -d | sed 's/\(^.*\)\..*$/\U\1/'`
+   orgname=`echo $domain | sed 's/\(^.*\)\\\.*$/\U\1/'`
+   echo $orgname
    sed -i "s/\(^organizationName.*\=\)$/\1\ $orgname/" ssl/*
 
    # Set the email to admin plus the domian name
-   email=admin\@`hostname -d`
-   email=`echo $email | sed -e 's/\./\\\\./g'`
+   email=admin\@$domain
+   
+   email=`echo $email | sed -e 's/\@/\\\\@/g'`
+   echo $email
    sed -i "s/\(^emailAddress.*\=\)$/\1\ $email/" ssl/*
-   wget -qO-  http://www.liveipmap.com/ > ip_info
+   if [ ! -f ip_info ] ; then 
+      wget -qO-  http://www.liveipmap.com/ > ip_info
+   fi
    # Callout to get the country and parse
    . ./country
    getcountry
@@ -60,7 +75,7 @@ ssl ()
    openssl req -x509 -newkey rsa:4096 -out cacert.pem -outform PEM -days 9000 -passout pass:$password
    echo "Generating cacert.crt"
    openssl x509 -in cacert.pem -out cacert.crt  
-   export OPENSSL_CONF=./`hostname`.cnf
+   export OPENSSL_CONF=./$hname.cnf
    echo "Generating server_key.pem"
    openssl req -newkey rsa:4096 -keyout tempkey.pem -keyform PEM -out tempreq.pem -outform PEM -passout pass:$password
    openssl rsa < tempkey.pem > server_key.pem -passin pass:$password

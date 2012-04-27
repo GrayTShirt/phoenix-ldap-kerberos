@@ -96,5 +96,5 @@ stateOrProvinceName     =
 countryName             =
 emailAddress            =
 organizationName        =
-organizationalUnitName  = IT" > ssl/`hostname`.cnf
+organizationalUnitName  = IT" > ssl/$1.cnf
 }

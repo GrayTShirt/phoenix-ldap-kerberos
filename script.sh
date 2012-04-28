@@ -124,8 +124,32 @@ ldapmodify -f ssl.ldif -D cn=admin,cn=config -w $password -x -H ldap://localhost
 rm ssl.ldif
 
 slapd_config_post
+echo "#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+BASE	$searchdc
+URI	ldaps://$hname
+#SIZELIMIT	12
+#TIMELIMIT	15
+#DEREF		never
+TLS_REQCERT never
+" > /etc/openldap/ldap.conf
+
 
 /etc/init.d/slapd restart
+
+echo "dn: olcDatabase={1}hdb,cn=config
+add: rootdn
+rootdn: $admindc
+-
+add: rootpw
+rootpw: $hashedpw" > admin.ldif
+ldapmodify -f admin.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
+rm admin.ldif
 
 . ./kerberos
 krb5conf $searchdc $admindc $password

@@ -41,7 +41,7 @@ krb5conf ()
         ignore_root = true
 
 	ldapservs = $fqdn
-	
+	ldapport = 636
 	passwd = /etc/passwd
         shadow = /etc/shadow
         groups = /etc/group
@@ -68,13 +68,13 @@ krb5conf ()
 " > /etc/krb5.conf
 
 
-echo "dn: cn=config
+echo "dn: olcDatabase={1}hdb,cn=config
 add: olcDbIndex
 olcDbIndex: krbPrincipalName eq,pres,sub" > krbprin.ldif
-ldapadd -f krbprin.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
+ldapmodify -f krbprin.ldif -D $2 -w $3 -x -H ldaps://localhost
 
 
-echo "dn: cn=config
+echo "dn: olcDatabase={1}hdb,cn=config
 replace: olcAccess
 olcAccess: to attrs=userPassword,shadowLastChange,krbPrincipalKey by dn=\"$2\" write by anonymous auth by self write by * none
 -
@@ -83,11 +83,13 @@ olcAccess: to dn.base=\"\" by * read
 -
 add: olcAccess
 olcAccess: to * by dn=\"$2\" write by * read" > krbacl.ldif
-ldapadd -f krbacl.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
+ldapmodify -f krbacl.ldif -D $2 -w $3 -x -H ldaps://localhost
 
-mkdir -p /etc/krb5kdc
+if [ ! -d "/etc/krb5kdc" ] ; then 
+	mkdir -p /etc/krb5kdc
+fi
 
-kdb5_ldap_util -D  cn=admin,cn=config create -subtrees $1 -r $realm -s -H ldaps://localhost -w $3
-kdb5_ldap_util -D  cn=admin,cn=config stashsrvpw -f /etc/krb5kdc/service.keyfile $2 -w $3
+kdb5_ldap_util -D  $2 create -subtrees $1 -r $realm -s -H ldaps://localhost -w $3
+kdb5_ldap_util -D  $2 stashsrvpw -f /etc/krb5kdc/service.keyfile $2 -w $3
 
 }

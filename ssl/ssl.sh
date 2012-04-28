@@ -3,6 +3,8 @@
 ssl () 
 {
    hname="0"
+   filename="0"
+   time="9000"
    while [ "$1" != "" ]; do
        case $1 in
            -p | --password )       shift
@@ -11,12 +13,21 @@ ssl ()
            -h | --hostname )       shift
                                    hname=$1
                                    ;;
+           -f | --file )           shift
+                                   filename=$1
+                                   ;;
+           -t | --time )           shift
+                                   time=$1
+                                   ;;
        esac
        shift
    done
 
    if [[ "$hname" == "0" ]] ; then 
       hname=`hostname -f`
+   fi
+   if [[ "$filename" == "0" ]] ; then 
+      filename="server"
    fi
    cd ssl/
    mkdir certs
@@ -29,6 +40,8 @@ ssl ()
    sdir=`echo $sdir | sed -e 's/\//\\\\\//g'`
    sed -i "s/ssldir/$sdir/g" certs/* 
 
+
+   sed -i "s/default\_days\ \=/default\_days\ \=\ $time/" certs/*
    # Set the common name of the cert to the fully qualifed domain name
   
    
@@ -77,14 +90,14 @@ ssl ()
    echo "Generating cacert.pem"
    openssl req -x509 -newkey rsa:4096 -out cacert.pem -outform PEM -days 9000 -passout pass:$password
    echo "Generating cacert.crt"
-   openssl x509 -in cacert.pem -out cacert.crt  
+   openssl x509 -in cacert.pem -out $filename\_cacert.crt  
    export OPENSSL_CONF=./$hname.cnf
    echo "Generating server_key.pem"
    openssl req -newkey rsa:4096 -keyout tempkey.pem -keyform PEM -out tempreq.pem -outform PEM -passout pass:$password
-   openssl rsa < tempkey.pem > server_key.pem -passin pass:$password
+   openssl rsa < tempkey.pem > $filename\_key.pem -passin pass:$password
    export OPENSSL_CONF=./caconfig.cnf
    echo "Generating server_crt.pem"
-   openssl ca -in tempreq.pem -out server_crt.pem -passin pass:$password 
+   openssl ca -in tempreq.pem -out $filename\_crt.pem -passin pass:$password 
    rm -f tempkey.pem && rm -f tempreq.pem
    cd ../
 }

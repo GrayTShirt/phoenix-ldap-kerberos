@@ -46,7 +46,7 @@ ssl -p $password -h $hname
 if [ ! -d "/etc/openldap/ssl/certs" ] ; then 
 	mkdir -p /etc/openldap/ssl/certs
 fi
-cp ssl/certs/cacert.crt /etc/openldap/ssl/ 
+cp ssl/certs/server_cacert.crt /etc/openldap/ssl/ 
 cp ssl/certs/server_crt.pem /etc/openldap/ssl/ 
 cp ssl/certs/server_key.pem /etc/openldap/ssl/ 
 rm -rf ssl/certs/
@@ -110,7 +110,7 @@ slapd_config_pre
 
 echo "dn: cn=config
 add: olcTLSCACertificateFile
-olcTLSCACertificateFile: /etc/openldap/ssl/cacert.crt
+olcTLSCACertificateFile: /etc/openldap/ssl/server_cacert.crt
 -
 add: olcTLSCertificateFile
 olcTLSCertificateFile: /etc/openldap/ssl/server_crt.pem

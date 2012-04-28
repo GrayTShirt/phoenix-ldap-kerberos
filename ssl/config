@@ -24,7 +24,7 @@ serial = ssldir/serial
 # Default expiration and encryption policies for certificates.
 #
 default_crl_days = 3000
-default_days = 9000
+default_days =
 default_md = md5 # Over 9 thousand!
 #
 policy = local_ca_policy

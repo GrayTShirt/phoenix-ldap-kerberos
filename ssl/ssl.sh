@@ -46,14 +46,14 @@ ssl ()
   
    
    hnamen=`echo $hname | sed -e 's/\./\\\\./g'`
-   domain=`echo $hnamen | sed "s/^[A-Za-z0-1\/]*[A-Za-z0-1\/]\.//" `
-   echo $hnamen   
-   echo $domain
+   domain=`echo $hnamen | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
+   # echo $hnamen   
+   # echo $domain
    sed -i "s/hhname/$hnamen/g" certs/*
 
    # Set the organization name to the domain name with out the tld
    orgname=`echo $domain | sed 's/\(^.*\)\\\.*$/\U\1/'`
-   echo $orgname
+   # echo $orgname
    sed -i "s/\(^organizationName.*\=\)$/\1\ $orgname/" certs/*
 
    # Set the email to admin plus the domian name

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+front ()
+{
+echo"dn: $1
+objectClass: top
+objectClass: dcObject
+objectclass: organization
+o: $4 Organization
+dc: $4
+description: $4 Enterprise 
+
+dn: $2
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin
+description: LDAP administrator
+userPassword: $3
+
+dn: ou=people,$1
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,$1
+objectClass: organizationalUnit
+ou: groups
+
+dn: ou=hosts,$1
+objectClass: organizationalUnit
+ou: hosts" > front.ldif
+}

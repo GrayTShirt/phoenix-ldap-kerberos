@@ -37,7 +37,13 @@ if [[ "$password" != "$password1" ]] ;  then
 	echo "passwords did not match, exiting"
 	exit 0
 fi
-searchdc=`hostname -d | sed 's/\(^\)/dc\=\1/'`
+hnamen=`echo $hname | sed -e 's/\./\\\\./g'`
+domain=`echo $hname | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
+
+# Set the organization name to the domain name with out the tld
+orgname=`echo $domain | sed 's/^\([A-Za-z0-9]*[A-Za-z0-9]\)\..*$/\U\1/'`
+
+searchdc=`echo $domain | sed 's/\(^\)/dc\=\1/'`
 searchdc=`echo $searchdc | sed 's/\./\,dc\=/g'`
 admindc="cn=admin,${searchdc}"
 
@@ -46,6 +52,7 @@ ssl -p $password -h $hname
 if [ ! -d "/etc/openldap/ssl/" ] ; then 
 	mkdir -p /etc/openldap/ssl/
 fi
+
 cp ssl/certs/server_cacert.crt /etc/openldap/ssl/cacert.crt
 cp ssl/certs/server_crt.pem /etc/openldap/ssl/ 
 cp ssl/certs/server_key.pem /etc/openldap/ssl/ 
@@ -142,14 +149,8 @@ TLS_REQCERT never
 
 /etc/init.d/slapd restart
 
-echo "dn: olcDatabase={1}hdb,cn=config
-add: rootdn
-rootdn: $admindc
--
-add: rootpw
-rootpw: $hashedpw" > admin.ldif
-ldapmodify -f admin.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
-rm admin.ldif
+. ./front
+front $searchdc $admindc $hashedpw $orgname
 
 . ./kerberos
 krb5conf $searchdc $admindc $password

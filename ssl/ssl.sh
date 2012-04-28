@@ -99,5 +99,5 @@ ssl ()
    echo "Generating server_crt.pem"
    openssl ca -in tempreq.pem -out $filename\_crt.pem -passin pass:$password 
    rm -f tempkey.pem && rm -f tempreq.pem
-   cd ../
+   cd ../../
 }

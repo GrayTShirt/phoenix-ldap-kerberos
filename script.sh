@@ -43,10 +43,10 @@ admindc="cn=admin,${searchdc}"
 
 . ./ssl/ssl.sh
 ssl -p $password -h $hname
-if [ ! -d "/etc/openldap/ssl/certs" ] ; then 
-	mkdir -p /etc/openldap/ssl/certs
+if [ ! -d "/etc/openldap/ssl/" ] ; then 
+	mkdir -p /etc/openldap/ssl/
 fi
-cp ssl/certs/server_cacert.crt /etc/openldap/ssl/ 
+cp ssl/certs/server_cacert.crt /etc/openldap/ssl/cacert.crt
 cp ssl/certs/server_crt.pem /etc/openldap/ssl/ 
 cp ssl/certs/server_key.pem /etc/openldap/ssl/ 
 rm -rf ssl/certs/
@@ -56,13 +56,13 @@ chmod 700 -R /etc/openldap/ssl
 if [ ! -d "/var/lib/ldap" ] ; then 
 	mkdir -p /var/lib/ldap
 fi
-chmod 700 /var/lib/ldap
-chown ldap:ldap /var/lib/ldap
+chmod 700 -R /var/lib/ldap
+chown ldap:ldap -R /var/lib/ldap
 
 if [ ! -d "/etc/openldap/slapd.d" ] ; then 
 	mkdir -p /etc/openldap/slapd.d
 fi
-chmod 700 /etc/openldap/slapd.d
+chmod 700 -R /etc/openldap/slapd.d
 
 . ./depends
 check_dependencies
@@ -84,9 +84,12 @@ echo "Initializing database frontend"
 /etc/init.d/slapd start
 echo "database initialized"
 /etc/init.d/slapd stop
+echo '1'
 sed -i "s/\(rootdn.*\)$/\#\1/" /etc/openldap/slapd.conf
+echo '2'
 sed -i "s/\(rootpw.*\)$/\#\1/" /etc/openldap/slapd.conf
-sed -i "s/\#\ config\_be/database config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw/" /etc/openldap/slapd.conf
+echo '3'
+sed -i "s/\#\ config\_be/database\ config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw/" /etc/openldap/slapd.conf
 
 
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
@@ -110,7 +113,7 @@ slapd_config_pre
 
 echo "dn: cn=config
 add: olcTLSCACertificateFile
-olcTLSCACertificateFile: /etc/openldap/ssl/server_cacert.crt
+olcTLSCACertificateFile: /etc/openldap/ssl/cacert.crt
 -
 add: olcTLSCertificateFile
 olcTLSCertificateFile: /etc/openldap/ssl/server_crt.pem
@@ -128,6 +131,6 @@ slapd_config_post
 krb5conf $searchdc $admindc $password
 /etc/init.d/mit-krb5kpropd start
 /etc/init.d/mit-krb5kdc start
-/etc/init.d/mit-krbkadmind start
+/etc/init.d/mit-krb5kadmind start
 
 exit 0

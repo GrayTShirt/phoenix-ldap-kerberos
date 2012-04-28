@@ -41,15 +41,15 @@ searchdc=`hostname -d | sed 's/\(^\)/dc\=\1/'`
 searchdc=`echo $searchdc | sed 's/\./\,dc\=/g'`
 admindc="cn=admin,${searchdc}"
 
-. ./ssl.sh
+. ./ssl/ssl.sh
 ssl -p $password -h $hname
-if [ ! -d "/etc/openldap/ssl/" ] ; then 
-	mkdir -p /etc/openldap/ssl/
+if [ ! -d "/etc/openldap/ssl/certs" ] ; then 
+	mkdir -p /etc/openldap/ssl/certs
 fi
-cp ssl/cacert.crt /etc/openldap/ssl/ 
-cp ssl/server_crt.pem /etc/openldap/ssl/ 
-cp ssl/server_key.pem /etc/openldap/ssl/ 
-rm -rf ssl/
+cp ssl/certs/cacert.crt /etc/openldap/ssl/ 
+cp ssl/certs/server_crt.pem /etc/openldap/ssl/ 
+cp ssl/certs/server_key.pem /etc/openldap/ssl/ 
+rm -rf ssl/certs/
 chown ldap:ldap -R /etc/openldap/ssl 
 chmod 700 -R /etc/openldap/ssl 
 

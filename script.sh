@@ -91,13 +91,10 @@ echo "Initializing database frontend"
 /etc/init.d/slapd start
 echo "database initialized"
 /etc/init.d/slapd stop
-echo '1'
 sed -i "s/\(rootdn.*\)$/\#\1/" /etc/openldap/slapd.conf
-echo '2'
+hashedpw1=`echo $hashedpw | sed -e 's/\//\\\\\//g'`
 sed -i "s/\(rootpw.*\)$/\#\1/" /etc/openldap/slapd.conf
-echo '3'
-sed -i "s/\#\ config\_be/database\ config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw/" /etc/openldap/slapd.conf
-
+sed -i "s/\#\ config\_be/database\ config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw1/" /etc/openldap/slapd.conf
 
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
 chown ldap:ldap -R /etc/openldap/slapd.d
@@ -151,6 +148,7 @@ TLS_REQCERT never
 
 . ./front
 front $searchdc $admindc $hashedpw $orgname
+ldapadd -f front.ldif -D cn=admin,cn=config -w $password -x -H ldaps://localhost
 
 . ./kerberos
 krb5conf $searchdc $admindc $password

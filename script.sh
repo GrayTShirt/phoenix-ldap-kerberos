@@ -91,11 +91,11 @@ echo "Initializing database frontend"
 /etc/init.d/slapd start
 echo "database initialized"
 /etc/init.d/slapd stop
-sed -i "s/\(rootdn.*\)$/\#\1/" /etc/openldap/slapd.conf
-hashedpw1=`echo $hashedpw | sed -e 's/\//\\\\\//g'`
-sed -i "s/\(rootpw.*\)$/\#\1/" /etc/openldap/slapd.conf
-sed -i "s/\#\ config\_be/database\ config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw1/" /etc/openldap/slapd.conf
-
+#sed -i "s/\(rootdn.*\)$/\#\1/" /etc/openldap/slapd.conf
+#hashedpw1=`echo $hashedpw | sed -e 's/\//\\\\\//g'`
+#sed -i "s/\(rootpw.*\)$/\#\1/" /etc/openldap/slapd.conf
+#sed -i "s/\#\ config\_be/database\ config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw1/" /etc/openldap/slapd.conf
+#sed -i "s/\#\ ACLadd/access\ to\ \*\n\ \ \ by dn\=\"cn\=admin\,cn\=config\"\ write\n\ \ \ by\ \*\ read/" /etc/openldap/slapd.conf
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
 chown ldap:ldap -R /etc/openldap/slapd.d
 

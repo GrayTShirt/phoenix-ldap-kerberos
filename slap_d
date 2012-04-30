@@ -69,7 +69,9 @@ moduleload	back_dnssrv.so
 #	Directives needed to implement policy:
 # access to dn.base=\"cn=config\" by  ${2} write
 # access to dn.base=\"cn=Subschema\" by * read
-# access to *
+access to *
+   by dn="cn=admin,cn=config" write
+   by * read
 #	by self write
 #	by users read
 #	by anonymous auth
@@ -83,27 +85,17 @@ moduleload	back_dnssrv.so
 #######################################################################
 # BDB database definitions
 #######################################################################
-# config_be
+database config
+rootdn \"cn=admin,cn=config\"
+rootpw		${3}
 
 database	hdb
 
 suffix		\"${1}\"
 checkpoint	32	30
-rootdn		\"${2}\"
-rootpw		${3}   
-#         <kbyte> <min>
- 
-
-# Cleartext passwords, especially for the rootdn, should
-# be avoid.  See slappasswd(8) and slapd.conf(5) for details.
-# Use of strong authentication encouraged.
-
-# The database directory MUST exist prior to running slapd AND 
-# should only be accessible by the slapd and slap tools.
-# Mode 700 recommended.
 directory	\"/var/lib/ldap\"
-# Indices to maintain
-index	objectClass	eq" > /etc/openldap/slapd.conf
+index	objectClass	eq
+" > /etc/openldap/slapd.conf
 
 echo "# \$OpenLDAP$
 # Example DB_CONFIG file for use with slapd(8) BDB/HDB databases.

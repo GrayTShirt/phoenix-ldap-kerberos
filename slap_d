@@ -146,8 +146,4 @@ set_lg_bsize 2097152
 # slapadd(8) or slapindex(8) access (see their -q option). 
 " > /var/lib/ldap/DB_CONFIG
 
-echo "
-
-
-" > /etc/openldap/ldap.conf
 }

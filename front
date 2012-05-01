@@ -2,6 +2,8 @@
 
 front ()
 {
+
+ipaddr=`/sbin/ifconfig eth0 | grep inet | sed 's/^.*inet\ addr\:\(.*\)\ Bcast.*$/\1/'`
 echo "dn: $1
 objectClass: top
 objectClass: dcObject
@@ -27,5 +29,16 @@ ou: groups
 
 dn: ou=hosts,$1
 objectClass: organizationalUnit
-ou: hosts" > front.ldif
+ou: hosts
+
+dn: cn=`hostname`\+ipHostNumber\=$ipaddr,ou=hosts,$1
+objectClass: ipHost
+objectClass: device
+objectClass: top
+cn: `hostname`+ipHostNumber=$ipaddr
+ipHostNumber: $ipaddr
+
+" > front.ldif
+
+
 }

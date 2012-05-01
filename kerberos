@@ -71,7 +71,7 @@ krb5conf ()
 echo "dn: olcDatabase={1}hdb,cn=config
 add: olcDbIndex
 olcDbIndex: krbPrincipalName eq,pres,sub" > krbprin.ldif
-ldapmodify -f krbprin.ldif -D $2 -w $3 -x -H ldaps://localhost
+ldapmodify -f krbprin.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
 
 
 echo "dn: olcDatabase={1}hdb,cn=config
@@ -83,7 +83,7 @@ olcAccess: to dn.base=\"\" by * read
 -
 add: olcAccess
 olcAccess: to * by dn=\"$2\" write by * read" > krbacl.ldif
-ldapmodify -f krbacl.ldif -D $2 -w $3 -x -H ldaps://localhost
+ldapmodify -f krbacl.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
 
 if [ ! -d "/etc/krb5kdc" ] ; then 
 	mkdir -p /etc/krb5kdc

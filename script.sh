@@ -151,11 +151,13 @@ echo "adding frontend"
 . ./front
 front $searchdc $admindc $hashedpw $orgname
 ldapadd -f front.ldif -D $admindc -w $password -x -H ldaps://localhost
-
+ 
 . ./kerberos
 krb5conf $searchdc $admindc $password
 /etc/init.d/mit-krb5kpropd start
 /etc/init.d/mit-krb5kdc start
 /etc/init.d/mit-krb5kadmind start
+. ./sso
+server $searchdc $hname $password
 
 exit 0

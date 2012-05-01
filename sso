@@ -6,12 +6,48 @@ fqdn=`hostname -f`
 domain=`hostname -d`
 realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`
 
+kadmin.local -q "addprinc -randkey ldap/$fqdn@$realm"
+kadmin.local -q "ktadd -k /etc/openldap/ldap.keytab ldap/$fqdn@$realm"
+
+
 echo "dn: cn=config
+add: olcSaslHost
 olcSaslHost: $fqdn
+-
+add: olcSaslRealm
 olcSaslRealm: $realm
+-
+replace: olcSaslSecProps
 olcSaslSecProps: noplain,noactive,noanonymous,minssf=56
+-
+add: olcAuthzRegexp
 olcAuthzRegexp: {0}\"uid=([^/]*),cn=$domain,cn=GSSAPI,cn=auth\" \"uid=\$1,ou=people,$1\"
+-
+add: olcAuthzRegexp
 olcAuthzRegexp: {1}\"uid=host/([^/]*).$domain,cn=$domain,cn=gssapi,cn=auth\" \"cn=\$1,ou=hosts,$1\"
+-
+add: olcAuthzRegexp
 olcAuthzRegexp: {2}\"uid=ldap/admin,cn=$domain,cn=gssapi,cn=auth\" \"cn=admin,cn=config\"" > sso.ldif
+
+ldapmodify -x -f sso.ldif -D cn=admin,cn=config -w $3 
+
+
+
+echo "#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+BASE	$1
+URI	ldaps://$2
+#SIZELIMIT	12
+#TIMELIMIT	15
+#DEREF		never
+TLS_REQCERT never
+sasl_mech GSSAPI
+krb5_ccname FILE:/tmp/krb5cc_0
+" > /etc/openldap/ldap.conf
 
 }

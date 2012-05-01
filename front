@@ -31,7 +31,7 @@ dn: ou=hosts,$1
 objectClass: organizationalUnit
 ou: hosts
 
-dn: cn=`hostname`\+ipHostNumber\=$ipaddr,ou=hosts,$1
+dn: cn=`hostname`+ipHostNumber=$ipaddr,ou=hosts,$1
 objectClass: ipHost
 objectClass: device
 objectClass: top

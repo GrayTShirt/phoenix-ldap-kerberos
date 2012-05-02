@@ -91,25 +91,12 @@ echo "Initializing database frontend"
 /etc/init.d/slapd start
 echo "database initialized"
 /etc/init.d/slapd stop
-#sed -i "s/\(rootdn.*\)$/\#\1/" /etc/openldap/slapd.conf
-#hashedpw1=`echo $hashedpw | sed -e 's/\//\\\\\//g'`
-#sed -i "s/\(rootpw.*\)$/\#\1/" /etc/openldap/slapd.conf
-#sed -i "s/\#\ config\_be/database\ config\nrootdn\ \"cn\=admin\,cn\=config\"\nrootpw\ $hashedpw1/" /etc/openldap/slapd.conf
-#sed -i "s/\#\ ACLadd/access\ to\ \*\n\ \ \ by dn\=\"cn\=admin\,cn\=config\"\ write\n\ \ \ by\ \*\ read/" /etc/openldap/slapd.conf
+
 slaptest -f /etc/openldap/slapd.conf -F /etc/openldap/slapd.d 
 chown ldap:ldap -R /etc/openldap/slapd.d
 
 mv /etc/openldap/slapd.conf /etc/openldap/slapd.conf.save
 
-# TODO add xinetd support for only listening and accepting connections over lan
-#ints=`/sbin/ifconfig | grep eth | sed 's/^.*\(eth[0-9]\).*$/\1/'`
-#interfaces=(${ints})
-#for i in "${interfaces[@]}" ; do
-#                  
-#done
-
-
-# mv /etc/conf.d/slapd /etc/conf.d/slapd.old
 
 slapd_config_pre
 

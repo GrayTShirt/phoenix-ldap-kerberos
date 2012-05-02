@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#TODO Make sure gnutls use flag is not built into anything, it never works
 check_dependencies ()
 {
    type eix >/dev/null 2>&1 || { echo >&2 "I require eix but it's not installed. Installing."; emerge eix; eix-update; }

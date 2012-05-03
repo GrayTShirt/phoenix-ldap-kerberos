@@ -6,11 +6,11 @@ check_dependencies ()
    type eix >/dev/null 2>&1 || { echo >&2 "I require eix but it's not installed. Installing."; emerge eix; eix-update; }
 
    ldap='ok'
-   eix -I net-nds/openldap --installed-with-use sasl --and --installed-with-use kerberos --and --installed-with-use ssl --and --installed-with-use berkdb || { ldap='install'; echo "ldap missing dependencies"; }
+   eix -I net-nds/openldap --installed-with-use sasl --and --installed-with-use kerberos --and --installed-with-use ssl --and --installed-with-use berkdb --and --installed-with-use perl --and -! --installed-with-use gnutls || { ldap='install' ; echo "ldap missing dependencies"; echo "net-nds/openldap -gnutls perl" >> /etc/portage/package.use ; }
    sasl='ok'
-   eix -I dev-libs/cyrus-sasl --installed-with-use kerberos --and  --installed-with-use openldap --and --installed-with-use ssl --and --installed-with-use berkdb || { sasl='install'; echo "cyrus-sasl missing dependencies"; }
+   eix -I dev-libs/cyrus-sasl --installed-with-use kerberos --and  --installed-with-use openldap --and --installed-with-use ssl --and --installed-with-use berkdb || { sasl='install' ; echo "cyrus-sasl missing dependencies" ; }
    krb='ok'
-   eix -I app-crypt/mit-krb5  --installed-with-use openldap || { krb='install'; echo "kerberos missing dependencies"; }
+   eix -I app-crypt/mit-krb5  --installed-with-use openldap || { krb='install' ; echo "kerberos missing dependencies" ; }
    echo "LDAP: $ldap, SASL: $sasl, KERBEROS: $krb"
    if [[ "$krb" == "install" || "$sasl" == "install" || "$ldap" == "install" ]] ; then 
       echo "Installing dependencies"

@@ -2,7 +2,7 @@
 
 prep_slap_d ()
 {
-
+pwd
 mv schema/* /etc/openldap/schema/
 chown ldap:ldap -R /etc/openldap/schema/
 chmod 640 /etc/openldap/schema/*

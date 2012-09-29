@@ -17,7 +17,7 @@ krb5conf ()
                               admindc=$1
                               ;;
       -f | --fqdn )           shift
-                              admindc=$1
+                              fqdn=$1
                               ;;
 
     esac
@@ -30,8 +30,8 @@ krb5conf ()
   
   domain=`echo $hnamen | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
   realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
-   
-[libdefaults]
+  
+echo "[libdefaults]
 	default_realm = $realm
 #	kdc_timesync = 1
 #	ccache_type = 4
@@ -71,16 +71,16 @@ krb5conf ()
 
 }
 [dbdefaults]
-        ldap_kerberos_container_dn = $1
+        ldap_kerberos_container_dn = $searchdc
 
 [dbmodules]
         openldap_ldapconf = {
                 db_library = kldap
-                ldap_kdc_dn = \"$2\"
+                ldap_kdc_dn = \"$admindc\"
 
                 # this object needs to have read rights on
                 # the realm container, principal container and realm sub-trees
-                ldap_kadmind_dn = \"$2\"
+                ldap_kadmind_dn = \"$admindc\"
 
                 # this object needs to have read and write rights on
                 # the realm container, principal container and realm sub-trees
@@ -94,19 +94,19 @@ krb5conf ()
 echo "dn: olcDatabase={1}hdb,cn=config
 add: olcDbIndex
 olcDbIndex: krbPrincipalName eq,pres,sub" > krbprin.ldif
-ldapmodify -f krbprin.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
+ldapmodify -f krbprin.ldif -D cn=admin,cn=config -w $password -x -H ldaps://localhost
 
 
 echo "dn: olcDatabase={1}hdb,cn=config
 replace: olcAccess
-olcAccess: to attrs=userPassword,shadowLastChange,krbPrincipalKey by dn=\"$2\" write by anonymous auth by self write by * none
+olcAccess: to attrs=userPassword,shadowLastChange,krbPrincipalKey by dn=\"$admindc\" write by anonymous auth by self write by * none
 -
 add: olcAccess
 olcAccess: to dn.base=\"\" by * read
 -
 add: olcAccess
-olcAccess: to * by dn=\"$2\" write by * read" > krbacl.ldif
-ldapmodify -f krbacl.ldif -D cn=admin,cn=config -w $3 -x -H ldaps://localhost
+olcAccess: to * by dn=\"$admindc\" write by * read" > krbacl.ldif
+ldapmodify -f krbacl.ldif -D cn=admin,cn=config -w $password -x -H ldaps://localhost
 
 if [ ! -d "/etc/krb5kdc" ] ; then 
 	mkdir -p /etc/krb5kdc
@@ -115,12 +115,12 @@ fi
 realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`
 echo "*/admin@$realm *" > /var/lib/krb5kdc/kadm5.acl
 
-kdb5_ldap_util -D  $2 create -subtrees $1 -r $realm -s -P $3 -H ldaps://localhost -w $3
-kdb5_ldap_util -D  $2 stashsrvpw -f /etc/krb5kdc/service.keyfile $2 -w $3
-ipaddr=`ifconfig eth0 | grep 'inet addr' | sed 's/^.*inet\ addr\:\(.*\)\ Bcast.*$/\1/'`
-kadmin.local -q "addprinc -x dn=\"cn=`hostname`+ipHostNumber=$ipaddr,ou=hosts,$1\" -randkey host/$fqdn@$realm"
+kdb5_ldap_util -D  $admindc create -subtrees $searchdc -r $realm -s -P $password -H ldaps://localhost -w $password
+kdb5_ldap_util -D  $admindc stashsrvpw -f /etc/krb5kdc/service.keyfile $admindc -w $password
+ipaddr=`ip addr show eth0 | grep 'inet ' | sed 's/^.*inet\ \(.*\)\/.*$/\1/'`
+kadmin.local -q "addprinc -x dn=\"cn=`hostname`+ipHostNumber=$ipaddr,ou=hosts,$searchdc\" -randkey host/$fqdn@$realm"
 kadmin.local -q "ktadd -k /etc/krb5.keytab host/$fqdn@$realm"
-kadmin.local -q "addprinc -pw $3 -x dn=\"$2\" root/admin"
+kadmin.local -q "addprinc -pw $password -x dn=\"$admindc\" root/admin"
 
 
 }

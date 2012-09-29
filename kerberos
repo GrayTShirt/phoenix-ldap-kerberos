@@ -95,7 +95,7 @@ echo "*/admin@$realm *" > /var/lib/krb5kdc/kadm5.acl
 
 kdb5_ldap_util -D  $2 create -subtrees $1 -r $realm -s -P $3 -H ldaps://localhost -w $3
 kdb5_ldap_util -D  $2 stashsrvpw -f /etc/krb5kdc/service.keyfile $2 -w $3
-ipaddr=`/sbin/ifconfig eth0 | grep 'inet addr' | sed 's/^.*inet\ addr\:\(.*\)\ Bcast.*$/\1/'`
+ipaddr=`ifconfig eth0 | grep 'inet addr' | sed 's/^.*inet\ addr\:\(.*\)\ Bcast.*$/\1/'`
 kadmin.local -q "addprinc -x dn=\"cn=`hostname`+ipHostNumber=$ipaddr,ou=hosts,$1\" -randkey host/$fqdn@$realm"
 kadmin.local -q "ktadd -k /etc/krb5.keytab host/$fqdn@$realm"
 kadmin.local -q "addprinc -pw $3 -x dn=\"$2\" root/admin"

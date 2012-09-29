@@ -1,6 +1,8 @@
 #!/bin/bash
 
- rm -rf /var/lib/ldap ssl/certs /etc/openldap/slapd.d
+rm -rf /var/lib/ldap ssl certs /etc/openldap/slapd.d
+
+git clean -f -d
  
 /etc/init.d/mit-krb5kpropd stop
 /etc/init.d/mit-krb5kdc stop

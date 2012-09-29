@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ rm -rf /var/lib/ldap ssl/certs /etc/openldap/slapd.d
+ 
+/etc/init.d/mit-krb5kpropd stop
+/etc/init.d/mit-krb5kdc stop
+/etc/init.d/mit-krb5kadmind stop
+/etc/init.d/slapd stop

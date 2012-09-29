@@ -60,6 +60,7 @@ searchdc=`echo $searchdc | sed 's/\./\,dc\=/g'`
 admindc="cn=admin,${searchdc}"
 git clone git://github.com/GrayTShirt/SSL.git ssl
 
+cd ssl/
 . ./ssl.sh
 ssl -p $password -h $hname
 if [ ! -d "/etc/openldap/ssl/" ] ; then 

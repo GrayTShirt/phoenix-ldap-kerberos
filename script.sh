@@ -159,6 +159,6 @@ krb5conf -s $searchdc -a $admindc -p $password -f $hname
 /etc/init.d/mit-krb5kdc start
 /etc/init.d/mit-krb5kadmind start
 . ./sso
-server $searchdc $hname $password
+server s $searchdc -a $admindc -p $password -f $hname
 
 exit 0

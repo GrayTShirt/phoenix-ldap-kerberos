@@ -2,9 +2,33 @@
 
 server ()
 {
-fqdn=`hostname -f`
-domain=`hostname -d`
-realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`
+  while [ "$1" != "" ]; do
+    case $1 in
+      -p | --password )       shift
+                              password=$1
+                              ;;
+      -s | --searchdc )       shift
+                              searchdc=$1
+                              ;;
+      -a | --admindc )        shift
+                              admindc=$1
+                              ;;
+      -f | --fqdn )           shift
+                              fqdn=$1
+                              ;;
+
+    esac
+    shift
+  done
+
+  if [ -z $fqdn ] ; then 
+    fqdn=`hostname -f`
+  fi 
+  
+  domain=`echo $fqdn | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
+  realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
+  echo "domain: $domain"
+  echo "realm: $realm"
 
 kadmin.local -q "addprinc -randkey ldap/$fqdn@$realm"
 kadmin.local -q "ktadd -k /etc/openldap/ldap.keytab ldap/$fqdn@$realm"
@@ -21,15 +45,15 @@ replace: olcSaslSecProps
 olcSaslSecProps: noplain,noactive,noanonymous,minssf=56
 -
 add: olcAuthzRegexp
-olcAuthzRegexp: {0}\"uid=([^/]*),cn=$domain,cn=GSSAPI,cn=auth\" \"uid=\$1,ou=people,$1\"
+olcAuthzRegexp: {0}\"uid=([^/]*),cn=$domain,cn=GSSAPI,cn=auth\" \"uid=\$1,ou=people,$searchdc\"
 -
 add: olcAuthzRegexp
-olcAuthzRegexp: {1}\"uid=host/([^/]*).$domain,cn=$domain,cn=gssapi,cn=auth\" \"cn=\$1,ou=hosts,$1\"
+olcAuthzRegexp: {1}\"uid=host/([^/]*).$domain,cn=$domain,cn=gssapi,cn=auth\" \"cn=\$1,ou=hosts,$searchdc\"
 -
 add: olcAuthzRegexp
 olcAuthzRegexp: {2}\"uid=ldap/admin,cn=$domain,cn=gssapi,cn=auth\" \"cn=admin,cn=config\"" > sso.ldif
 
-ldapmodify -x -f sso.ldif -D cn=admin,cn=config -w $3 
+ldapmodify -x -f sso.ldif -D cn=admin,cn=config -w $password
 
 
 
@@ -40,8 +64,8 @@ echo "#
 # See ldap.conf(5) for details
 # This file should be world readable but not world writable.
 
-BASE	$1
-URI	ldaps://$2
+BASE	$searchdc
+URI	ldaps://$admindc
 #SIZELIMIT	12
 #TIMELIMIT	15
 #DEREF		never

@@ -28,8 +28,10 @@ krb5conf ()
     fqdn=`hostname -f`
   fi 
   
-  domain=`echo $hnamen | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
+  domain=`echo $fqdn | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
   realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
+  echo "domain: $domain"
+  echo "realm: $realm"
   
 echo "[libdefaults]
 	default_realm = $realm
@@ -50,10 +52,10 @@ echo "[libdefaults]
 	.$domain = $realm
 	$domain = $realm
 [logging]
-   kdc = FILE:/var/log/krb5/kdc.log
+  kdc = FILE:/var/log/krb5/kdc.log
 	admin_server = FILE:/var/log/krb5/kadmin.log
 [appdefaults]
- pam = {
+  pam = {
 	     ticket_lifetime = 1d
         renew_lifetime = 1d
         forwardable = true
@@ -63,9 +65,9 @@ echo "[libdefaults]
         try_first_pass = true
         ignore_root = true
 
-	     ldapservs = $fqdn
-     	  ldapport = 636
-	     passwd = /etc/passwd
+	ldapservs = $fqdn
+     	ldapport = 636
+	passwd = /etc/passwd
         shadow = /etc/shadow
         groups = /etc/group
 
@@ -112,7 +114,6 @@ if [ ! -d "/etc/krb5kdc" ] ; then
 	mkdir -p /etc/krb5kdc
 fi
 
-realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`
 echo "*/admin@$realm *" > /var/lib/krb5kdc/kadm5.acl
 
 kdb5_ldap_util -D  $admindc create -subtrees $searchdc -r $realm -s -P $password -H ldaps://localhost -w $password

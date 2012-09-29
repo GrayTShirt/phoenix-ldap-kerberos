@@ -2,11 +2,11 @@
 
 prep_slap_d ()
 {
-wget http://bind9-ldap.bayour.com/dnszone-schema.txt 
 
-mv dnszone-schema.txt /etc/openldap/schema/dnszone.schema
-chown ldap:ldap /etc/openldap/schema/dnszone.schema
-chmod 
+mv schema/* /etc/openldap/schema/
+chown ldap:ldap -R /etc/openldap/schema/
+chmod 640 /etc/openldap/schema/*
+
 # mv /etc/openldap/slapd.conf /etc/openldap/slapd.conf.old
 echo "
 #
@@ -29,6 +29,11 @@ include		/etc/openldap/schema/openldap.schema
 include		/etc/openldap/schema/ppolicy.schema 
 include		/etc/openldap/schema/pmi.schema
 include		/etc/openldap/schema/dnszone.schema
+include		/etc/openldap/schema/sudo.schema
+include		/etc/openldap/schema/evolutionperson.schema
+include		/etc/openldap/schema/calentry.schema
+include		/etc/openldap/schema/puppet.schema
+include		/etc/openldap/schema/qmail.schema
 # include		/etc/openldap/schema/rfc2307bis.schema
 
 # Define global ACLs to disable default read access.

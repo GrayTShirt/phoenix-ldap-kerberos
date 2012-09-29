@@ -1,5 +1,0 @@
-This is an automation script for building a Kerberos / LDAP network information system.
-
-Future versions will have managment scripts for DNS zones, machines, people and groups.
-
-At this time only Funtoo / Gentoo is supported.

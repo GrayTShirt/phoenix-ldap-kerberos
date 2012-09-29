@@ -5,10 +5,32 @@
 # $3: password
 krb5conf ()
 {
-   domain=`hostname -d`
-   realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
-   fqdn=`hostname -f`
-   echo "
+  while [ "$1" != "" ]; do
+    case $1 in
+      -p | --password )       shift
+                              password=$1
+                              ;;
+      -s | --searchdc )       shift
+                              searchdc=$1
+                              ;;
+      -a | --admindc )        shift
+                              admindc=$1
+                              ;;
+      -f | --fqdn )           shift
+                              admindc=$1
+                              ;;
+
+    esac
+    shift
+  done
+
+  if [ -z $fqdn ] ; then 
+    fqdn=`hostname -f`
+  fi 
+  
+  domain=`echo $hnamen | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
+  realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
+   
 [libdefaults]
 	default_realm = $realm
 #	kdc_timesync = 1

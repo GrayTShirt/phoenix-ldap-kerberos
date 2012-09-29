@@ -9,34 +9,46 @@ rentval=`id | sed 's/uid\=\([0-9]\).*$/\1/'`
 if [ "$rentval" -ne "0" ] ; then 
 	echo "I must be run as root or with sudo privledges"
 	echo "Attempting to run as sudo."
-	sudo $0
-   echo "failed."
+	sudo $0 || echo "failure"
    echo "exiting."
 	exit 0
 fi
 
-dialog --backtitle "KERBEROS/LDAP config script" \
-	--inputbox \
-	"Is this Server Name Correct? `hostname -f`" 0 60 2> name.txt.$$
-	hname=`cat name.txt.$$`
-	rm -f name.txt.$$
-if [ -z "$input" ]; then 
-	hname=`hostname -f`
-else 
-	hname=$input
+# dialog --backtitle "KERBEROS/LDAP config script" \
+# 	--inputbox \
+#	"Is this Server Name Correct? `hostname -f`" 0 60 2> name.txt.$$
+#	hname=`cat name.txt.$$`
+# 	rm -f name.txt.$$
+# if [ -z "$input" ]; then 
+# 	hname=`hostname -f`
+# else 
+# 	hname=$input
+# fi
+# dialog --passwordbox \
+# 	"Kerberos/LDAP Password:" 0 60 2> passwd.txt.$$
+# password=`cat passwd.txt.$$`
+# rm -f passwd.txt.$$
+# dialog --passwordbox \
+# 	"Confirm Kerberos/LDAP Password:" 0 60 2> passwd.txt.$$
+# password1=`cat passwd.txt.$$`
+# rm -f passwd.txt.$$
+hname=`hostname -f`
+read -p "Leave empty to use this hostname: `hostname -f`. " hname1; echo
+
+if [ ! -z $hname1 ] ; then 
+  hname=$hname1
 fi
-dialog --passwordbox \
-	"Kerberos/LDAP Password:" 0 60 2> passwd.txt.$$
-password=`cat passwd.txt.$$`
-rm -f passwd.txt.$$
-dialog --passwordbox \
-	"Confirm Kerberos/LDAP Password:" 0 60 2> passwd.txt.$$
-password1=`cat passwd.txt.$$`
-rm -f passwd.txt.$$
+
+stty -echo
+read -p "Password: " password; echo
+read -p "Confirm Password: " password1; echo
+stty echo
+
 if [[ "$password" != "$password1" ]] ;  then 
-	echo "passwords did not match, exiting"
+	echo "passwords did not match!"
 	exit 0
 fi
+
 hnamen=`echo $hname | sed -e 's/\./\\\\./g'`
 domain=`echo $hname | sed "s/^[A-Za-z0-9\/]*[A-Za-z0-9\/]\.//" `
 

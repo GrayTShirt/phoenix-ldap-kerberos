@@ -59,14 +59,12 @@ searchdc=`echo $domain | sed 's/\(^\)/dc\=\1/'`
 searchdc=`echo $searchdc | sed 's/\./\,dc\=/g'`
 admindc="cn=admin,${searchdc}"
 git clone git://github.com/GrayTShirt/SSL.git ssl
-cd ssl
+
 . ./ssl.sh
 ssl -p $password -h $hname
 if [ ! -d "/etc/openldap/ssl/" ] ; then 
 	mkdir -p /etc/openldap/ssl/
 fi
-
-cd ..
 
 cp ssl/certs/server_cacert.crt /etc/openldap/ssl/cacert.crt
 cp ssl/certs/server_crt.pem /etc/openldap/ssl/ 

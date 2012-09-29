@@ -58,7 +58,7 @@ orgname=`echo $domain | sed 's/^\([A-Za-z0-9]*[A-Za-z0-9]\)\..*$/\U\1/'`
 searchdc=`echo $domain | sed 's/\(^\)/dc\=\1/'`
 searchdc=`echo $searchdc | sed 's/\./\,dc\=/g'`
 admindc="cn=admin,${searchdc}"
-git clone https://github.com/graytshirt/ssl.git 
+git clone git://github.com/GrayTShirt/SSL.git ssl
 . ./ssl/ssl.sh
 ssl -p $password -h $hname
 if [ ! -d "/etc/openldap/ssl/" ] ; then 

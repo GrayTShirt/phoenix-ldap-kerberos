@@ -16,8 +16,9 @@ Phoenix Ldap Kerberos
 TODO
 ====
 
-    1) Add script to configure services; postgres, bind, dovecot, postfix, nginx, apache, xmpp, radius, xen, ssh, pam, libvirt
-    2) A usage functions
-    3) Write rails frontend
-    4) Write C config daemon
+    1) Add custom hostname to /etc/hosts
+    2) Add script to configure services; postgres, bind, dovecot, postfix, nginx, apache, xmpp, radius, xen, ssh, pam, libvirt
+    3) A usage functions
+    4) Write rails frontend
+    5) Write C config daemon
 

@@ -154,10 +154,13 @@ front $searchdc $admindc $hashedpw $orgname
 ldapadd -f front.ldif -D $admindc -w $password -x -H ldaps://localhost
  
 . ./kerberos
+echo "Configuring Kerberos"
 krb5conf -s $searchdc -a $admindc -p $password -f $hname
+
 /etc/init.d/mit-krb5kpropd start
 /etc/init.d/mit-krb5kdc start
 /etc/init.d/mit-krb5kadmind start
+echo "Configuring Single Sign On"
 . ./sso
 server s $searchdc -a $admindc -p $password -f $hname
 

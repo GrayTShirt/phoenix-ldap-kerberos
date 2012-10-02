@@ -32,7 +32,10 @@ krb5conf ()
   realm=`echo $domain | sed 's/^\(.*\)$/\U\1/'`   
   echo "domain: $domain"
   echo "realm: $realm"
-  
+
+  if [ ! -d "/var/log/krb5" ]; then
+    mkdir -p /var/log/krb5
+  fi  
 echo "[libdefaults]
 	default_realm = $realm
 #	kdc_timesync = 1

@@ -1,0 +1,36 @@
+#!/bin/sh
+
+echo -e "The purpose of this script is to combine the backend's of many diffierent services into a single gssapi authenticated ldap database, not to say that ldap database can't be replicated or have fail over, but a single type of backend for ease of configuration and managment" 
+
+# Mail
+
+# DNS
+
+# Webauth or equivalent on other web servers
+
+# nfs 
+
+# rsyslog gssapi
+
+# roundcube
+
+# radius w/ gssapi 
+
+# CLI for user/group/service managment
+
+# Web frontend for user/group/service, but also machine and service monitoring, support IPMI
+
+# AFS support
+
+# Libvirt Support ( Will be forced to standardize to Xen 4.1 temporarily, or run on xcp.)
+# --Continue work on compiling xcp (xen libs) for Funtoo 
+
+# Sysadmin group for ldap user management.
+
+# Hadoop giraph drilldown for log parsing, ganglia machine learning, and icinga metrics
+
+# Need web server statistis to go straight to ganglia.
+
+# Update Overlay Need to work on the drbd-kernel, hadoop and webauth
+
+# Provide out of box support for craftbukkit server.

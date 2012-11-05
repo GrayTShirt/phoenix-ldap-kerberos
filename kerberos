@@ -119,7 +119,10 @@ fi
 
 echo "*/admin@$realm *" > /var/lib/krb5kdc/kadm5.acl
 
-kdb5_ldap_util -D  $admindc create -subtrees $searchdc -r $realm -s -P $password -H ldaps://localhost -w $password
+echo "Creating kerberos table in ldap"
+# kdb5_ldap_util -D  $admindc create -subtrees $searchdc -r $realm -s -P $password -H ldaps://localhost -w $password
+kdb5_ldap_util -D  $admindc -H ldaps://localhost -w $password create -subtrees $searchdc -r $realm -s -P $password
+echo "Caching kerberos password"
 kdb5_ldap_util -D  $admindc stashsrvpw -f /etc/krb5kdc/service.keyfile $admindc -w $password
 ipaddr=`ip addr show eth0 | grep 'inet ' | sed 's/^.*inet\ \(.*\)\/.*$/\1/'`
 kadmin.local -q "addprinc -x dn=\"cn=`hostname`+ipHostNumber=$ipaddr,ou=hosts,$searchdc\" -randkey host/$fqdn@$realm"
